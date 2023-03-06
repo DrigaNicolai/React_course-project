@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 /*import Counter from "./components/Counter";
 import ClassCounter from "./components/ClassCounter";*/
 import "./styles/App.css";
-import PostItem from "./components/PostItem";
+// import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
 
 function App() {
@@ -22,6 +22,11 @@ function App() {
       {/*<Counter />*/}
       {/*<h1>Class created component</h1>*/}
       {/*<ClassCounter />*/}
+      <form>
+        <input type="text" placeholder="Post name" />
+        <input type="text" placeholder="Post description" />
+        <button>Create</button>
+      </form>
       <PostList
         posts={posts}
         title={"List of posts 1"}
