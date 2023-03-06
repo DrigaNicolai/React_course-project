@@ -36,11 +36,19 @@ function App() {
       {/*<h1>Class created component</h1>*/}
       {/*<ClassCounter />*/}
       <PostForm create={createPost} />
-      <PostList
-        posts={posts}
-        title={"List of posts 1"}
-        remove={removePost}
-      />
+      { posts.length
+        ?
+          <PostList
+            posts={posts}
+            title={"List of posts 1"}
+            remove={removePost}
+          />
+        :
+          <h1 style={ { textAlign: "center" } }>
+            No posts available!
+          </h1>
+      }
+
     </div>
   );
 }
