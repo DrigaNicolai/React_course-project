@@ -1,12 +1,14 @@
 import React from 'react';
 import {IPost} from "../models";
+import MyButton from "./UI/button/MyButton";
 
 interface PostProps {
   post: IPost,
-  number: number
+  number: number,
+  remove: (post: IPost) => void
 }
 
-const PostItem = ({post, number}: PostProps) => {
+const PostItem = ({post, number, remove}: PostProps) => {
   return (
     <div className="post">
       <div className="post__content">
@@ -16,7 +18,9 @@ const PostItem = ({post, number}: PostProps) => {
         </div>
       </div>
       <div className="post__btns">
-        <button>Delete</button>
+        <MyButton onClick={() => remove(post)}>
+          Delete
+        </MyButton>
       </div>
     </div>
   );

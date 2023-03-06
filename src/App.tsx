@@ -25,6 +25,10 @@ function App() {
     setPosts([...posts, newPost]);
   }
 
+  const removePost = (post: IPost): void => {
+    setPosts(posts.filter(item => item.id !== post.id));
+  }
+
   return (
     <div className="App">
       {/*<h1>Function created component</h1>*/}
@@ -35,6 +39,7 @@ function App() {
       <PostList
         posts={posts}
         title={"List of posts 1"}
+        remove={removePost}
       />
     </div>
   );

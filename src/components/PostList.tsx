@@ -4,10 +4,11 @@ import {IPost} from "../models";
 
 interface PostsProps {
   posts: IPost[],
-  title: string
+  title: string,
+  remove: (post: IPost) => void
 }
 
-const PostList = ({posts, title}: PostsProps) => {
+const PostList = ({posts, title, remove}: PostsProps) => {
   return (
     <div>
       <h1 style={ { textAlign: "center"} }>{ title }</h1>
@@ -16,6 +17,7 @@ const PostList = ({posts, title}: PostsProps) => {
             post={post}
             key={post.id}
             number={index + 1}
+            remove={remove}
           />
         )
       }
