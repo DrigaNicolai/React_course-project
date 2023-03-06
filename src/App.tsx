@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 /*import Counter from "./components/Counter";
 import ClassCounter from "./components/ClassCounter";*/
 import "./styles/App.css";
@@ -17,7 +17,28 @@ function App() {
       body: "Description for react"
     }
   ]);
+  const [title, setTitle] = useState("");
+  // const bodyInputRef = useRef();
+  const [body, setBody] = useState("");
 
+  const addNewPost = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(title);
+    // // @ts-ignore
+    // console.log(bodyInputRef.current.value);
+    console.log(body)
+  }
+
+  const changeTitle = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setTitle(e.target.value);
+  }
+
+  const changeBody = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setBody(e.target.value);
+  }
+
+
+  // @ts-ignore
   return (
     <div className="App">
       {/*<h1>Function created component</h1>*/}
@@ -25,9 +46,25 @@ function App() {
       {/*<h1>Class created component</h1>*/}
       {/*<ClassCounter />*/}
       <form>
-        <MyInput type="text" placeholder="Post name" />
-        <MyInput type="text" placeholder="Post description" />
-        <MyButton>Create</MyButton>
+        <MyInput
+          type="text"
+          placeholder="Post title"
+          value={title}
+          onChange={changeTitle}
+        />
+        {/*Uncontrolled component*/}
+        {/*<MyInput
+          ref={bodyInputRef}
+          type="text"
+          placeholder="Post description"
+        />*/}
+        <MyInput
+          type="text"
+          placeholder="Post body"
+          value={body}
+          onChange={changeBody}
+        />
+        <MyButton onClick={addNewPost}>Create</MyButton>
       </form>
       <PostList
         posts={posts}
