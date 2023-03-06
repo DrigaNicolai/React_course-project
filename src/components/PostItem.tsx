@@ -2,14 +2,15 @@ import React from 'react';
 import {IPost} from "../models";
 
 interface PostProps {
-  post: IPost
+  post: IPost,
+  number: number
 }
 
-const PostItem = ({post}: PostProps) => {
+const PostItem = ({post, number}: PostProps) => {
   return (
     <div className="post">
       <div className="post__content">
-        <strong>{ post.id }. { post.title }</strong>
+        <strong>{ number }. { post.title }</strong>
         <div>
           { post.body }
         </div>

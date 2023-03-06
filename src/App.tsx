@@ -23,10 +23,14 @@ function App() {
 
   const addNewPost = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(title);
     // // @ts-ignore
     // console.log(bodyInputRef.current.value);
-    console.log(body)
+    const newPost = {
+      id: Date.now(),
+      title,
+      body
+    }
+    setPosts([...posts, newPost]);
   }
 
   const changeTitle = (e: { target: { value: React.SetStateAction<string>; }; }) => {
