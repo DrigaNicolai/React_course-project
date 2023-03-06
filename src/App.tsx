@@ -17,28 +17,25 @@ function App() {
       body: "Description for react"
     }
   ]);
-  const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
   // const bodyInputRef = useRef();
-  const [body, setBody] = useState("");
+  // const [body, setBody] = useState("");
+  const [post, setPost] = useState({ title: "" as string, body: "" as string });
 
   const addNewPost = (e: React.FormEvent) => {
     e.preventDefault();
     // // @ts-ignore
     // console.log(bodyInputRef.current.value);
-    const newPost = {
-      id: Date.now(),
-      title,
-      body
-    }
-    setPosts([...posts, newPost]);
+    setPosts([...posts, {...post, id: Date.now()}]);
+    setPost({ title: "", body: "" });
   }
 
-  const changeTitle = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    setTitle(e.target.value);
+  const changeTitle = (e: { target: { value: string; }; }) => {
+    setPost({...post, title: e.target.value})
   }
 
-  const changeBody = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    setBody(e.target.value);
+  const changeBody = (e: { target: { value: string; }; }) => {
+    setPost({...post, body: e.target.value})
   }
 
 
@@ -53,7 +50,7 @@ function App() {
         <MyInput
           type="text"
           placeholder="Post title"
-          value={title}
+          value={post.title}
           onChange={changeTitle}
         />
         {/*Uncontrolled component*/}
@@ -65,7 +62,7 @@ function App() {
         <MyInput
           type="text"
           placeholder="Post body"
-          value={body}
+          value={post.body}
           onChange={changeBody}
         />
         <MyButton onClick={addNewPost}>Create</MyButton>
