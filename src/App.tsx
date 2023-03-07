@@ -7,6 +7,7 @@ import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import {IPost} from "./models";
 import MySelect from "./components/UI/select/MySelect";
+import MyInput from "./components/UI/input/MyInput";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -27,7 +28,17 @@ function App() {
   // const bodyInputRef = useRef();
   // const [body, setBody] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const getSortedPosts = () => {
+    if (selectedSort) {
+      return [...posts].sort((a: any, b: any) => a[selectedSort].localeCompare(b[selectedSort]));
+    }
+
+    return posts;
+  }
+
+  const sortedPosts = getSortedPosts();
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -39,7 +50,10 @@ function App() {
 
   const sortPosts = (sort: string) => {
     setSelectedSort(sort);
-    setPosts([...posts].sort((a: any, b: any) => a[sort].localeCompare(b[sort])))
+  }
+
+  const handleChangeSearchQuery = (e: any) => {
+    setSearchQuery(e.target.value)
   }
 
   return (
@@ -51,6 +65,11 @@ function App() {
       <PostForm create={createPost} />
       <hr style={ {margin: "15px 0"} } />
       <div>
+        <MyInput
+          value={searchQuery}
+          placeholder="Search"
+          onChange={handleChangeSearchQuery}
+        />
         <MySelect
           value={selectedSort}
           defaultValue="Sort"
@@ -64,7 +83,7 @@ function App() {
       { posts.length
         ?
           <PostList
-            posts={posts}
+            posts={sortedPosts}
             title={"List of posts 1"}
             remove={removePost}
           />
