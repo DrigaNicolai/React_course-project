@@ -9,6 +9,7 @@ import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/MyModal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
 import {usePosts} from "./hooks/usePosts";
+import axios from "axios";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -32,6 +33,12 @@ function App() {
   const [modal, setModal] = useState(false);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
+  const fetchPosts = async () => {
+    const response = await axios.get("https://jsonplaceholder.typicode.com/posts")
+
+    setPosts(response.data);
+  }
+
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
     setModal(false);
@@ -47,6 +54,7 @@ function App() {
       {/*<Counter />*/}
       {/*<h1>Class created component</h1>*/}
       {/*<ClassCounter />*/}
+      <button onClick={fetchPosts}>GET POSTS</button>
       <MyButton
         style={ {marginTop: 30} }
         onClick={() => setModal(true)}
