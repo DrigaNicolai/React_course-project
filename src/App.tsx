@@ -1,13 +1,11 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 /*import Counter from "./components/Counter";
 import ClassCounter from "./components/ClassCounter";*/
 import "./styles/App.css";
-// import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import {IPost} from "./models";
-import MySelect from "./components/UI/select/MySelect";
-import MyInput from "./components/UI/input/MyInput";
+import PostFilter from "./components/PostFilter";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -27,18 +25,20 @@ function App() {
   // const [title, setTitle] = useState("");
   // const bodyInputRef = useRef();
   // const [body, setBody] = useState("");
-  const [selectedSort, setSelectedSort] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState({ sort: "", query: "" });
 
-  const getSortedPosts = () => {
-    if (selectedSort) {
-      return [...posts].sort((a: any, b: any) => a[selectedSort].localeCompare(b[selectedSort]));
+  const sortedPosts = useMemo(() => {
+    console.log("Sorted posts function works")
+    if (filter.sort) {
+      return [...posts].sort((a: any, b: any) => a[filter.sort].localeCompare(b[filter.sort]));
     }
 
     return posts;
-  }
+  }, [filter.sort, posts]);
 
-  const sortedPosts = getSortedPosts();
+  const sortedAndSearchedPosts = useMemo(() => {
+    return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLowerCase()));
+  }, [filter.query, sortedPosts]);
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -46,14 +46,6 @@ function App() {
 
   const removePost = (post: IPost): void => {
     setPosts(posts.filter(item => item.id !== post.id));
-  }
-
-  const sortPosts = (sort: string) => {
-    setSelectedSort(sort);
-  }
-
-  const handleChangeSearchQuery = (e: any) => {
-    setSearchQuery(e.target.value)
   }
 
   return (
@@ -64,34 +56,15 @@ function App() {
       {/*<ClassCounter />*/}
       <PostForm create={createPost} />
       <hr style={ {margin: "15px 0"} } />
-      <div>
-        <MyInput
-          value={searchQuery}
-          placeholder="Search"
-          onChange={handleChangeSearchQuery}
-        />
-        <MySelect
-          value={selectedSort}
-          defaultValue="Sort"
-          options={[
-            { value: "title", name: "By title" },
-            { value: "body", name: "By body" },
-          ]}
-          onChange={sortPosts}
-        />
-      </div>
-      { posts.length
-        ?
-          <PostList
-            posts={sortedPosts}
-            title={"List of posts 1"}
-            remove={removePost}
-          />
-        :
-          <h1 style={ { textAlign: "center" } }>
-            No posts available!
-          </h1>
-      }
+      <PostFilter
+        filter={filter}
+        setFilter={setFilter}
+      />
+      <PostList
+        posts={sortedAndSearchedPosts}
+        title={"List of posts 1"}
+        remove={removePost}
+      />
 
     </div>
   );
