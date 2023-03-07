@@ -6,6 +6,7 @@ import "./styles/App.css";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
 import {IPost} from "./models";
+import MySelect from "./components/UI/select/MySelect";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -15,11 +16,18 @@ function App() {
       id: 3,
       title: "React",
       body: "Description for react"
+    },
+    {
+      id: 4,
+      title: "Python",
+      body: "Python description"
     }
   ]);
   // const [title, setTitle] = useState("");
   // const bodyInputRef = useRef();
   // const [body, setBody] = useState("");
+  const [selectedSort, setSelectedSort] = useState("");
+
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -29,6 +37,11 @@ function App() {
     setPosts(posts.filter(item => item.id !== post.id));
   }
 
+  const sortPosts = (sort: string) => {
+    setSelectedSort(sort);
+    setPosts([...posts].sort((a: any, b: any) => a[sort].localeCompare(b[sort])))
+  }
+
   return (
     <div className="App">
       {/*<h1>Function created component</h1>*/}
@@ -36,6 +49,18 @@ function App() {
       {/*<h1>Class created component</h1>*/}
       {/*<ClassCounter />*/}
       <PostForm create={createPost} />
+      <hr style={ {margin: "15px 0"} } />
+      <div>
+        <MySelect
+          value={selectedSort}
+          defaultValue="Sort"
+          options={[
+            { value: "title", name: "By title" },
+            { value: "body", name: "By body" },
+          ]}
+          onChange={sortPosts}
+        />
+      </div>
       { posts.length
         ?
           <PostList
