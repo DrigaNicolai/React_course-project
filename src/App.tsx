@@ -11,6 +11,7 @@ import MyButton from "./components/UI/button/MyButton";
 import {usePosts} from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import Loader from "./components/UI/Loader/Loader";
+import {useFetching} from "./hooks/useFetching";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -33,19 +34,17 @@ function App() {
   const [filter, setFilter] = useState({ sort: "", query: "" });
   const [modal, setModal] = useState(false);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
-  const [isPostsLoading, setIsPostsLoading] = useState(false);
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
-    setIsPostsLoading(true);
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
     const posts = await PostService.getAll();
 
     setPosts(posts);
-    setIsPostsLoading(false);
-  }
+  })
+
+  useEffect(() => {
+    console.log("useEffect hook");
+    // @ts-ignore
+    fetchPosts();
+  }, []);
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -62,7 +61,6 @@ function App() {
       {/*<Counter />*/}
       {/*<h1>Class created component</h1>*/}
       {/*<ClassCounter />*/}
-      <button onClick={fetchPosts}>GET POSTS</button>
       <MyButton
         style={ {marginTop: 30} }
         onClick={() => setModal(true)}
@@ -80,6 +78,11 @@ function App() {
         filter={filter}
         setFilter={setFilter}
       />
+      { postError &&
+        <h1>
+          Error happened: ${postError}
+        </h1>
+      }
       { isPostsLoading
         ?
           <div style={ { display: "flex", justifyContent: "center", marginTop: 50 } }>
