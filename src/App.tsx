@@ -12,7 +12,8 @@ import {usePosts} from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import Loader from "./components/UI/Loader/Loader";
 import {useFetching} from "./hooks/useFetching";
-import {getPageCount, getPagesArray} from "./utils/pages";
+import {getPageCount} from "./utils/pages";
+import Pagination from "./components/UI/pagination/Pagination";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -39,9 +40,7 @@ function App() {
   const [page, setPage] = useState(1);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
-  let pagesArray = getPagesArray(totalPages);
-
-  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit: number, page: number) => {
     const response = await PostService.getAll(limit, page);
     setPosts(response.data);
 
@@ -52,7 +51,7 @@ function App() {
   useEffect(() => {
     console.log("useEffect hook");
     // @ts-ignore
-    fetchPosts();
+    fetchPosts(limit, page);
   }, []);
 
   const createPost = (newPost: IPost): void => {
@@ -66,7 +65,7 @@ function App() {
 
   const changePage = (page: number) => {
     setPage(page);
-    fetchPosts()
+    fetchPosts(limit, page)
   }
 
   return (
@@ -109,18 +108,11 @@ function App() {
             remove={removePost}
           />
       }
-      <div className="page__wrapper">
-        { pagesArray.map(p =>
-            <span
-              key={p}
-              className={page === p ? "page page__current" : "page"}
-              onClick={() => changePage(p)}
-            >
-              {p}
-            </span>
-          )
-        }
-      </div>
+      <Pagination
+        totalPages={totalPages}
+        page={page}
+        changePage={changePage}
+      />
     </div>
   );
 }
