@@ -14,7 +14,7 @@ const AppRouter = () => {
       <Route path="/posts/:id" element={ <PostIdPage /> } />
       <Route path="/error" element={ <Error /> } />
       {/* react-router-dom v6: Route path=* v5: Redirect to */}
-      <Route path="*" element={<Navigate to="/error" replace /> } />
+      <Route path="*" element={<Navigate to="/posts" replace /> } />
     </Routes>
   );
 };
