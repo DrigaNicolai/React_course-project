@@ -2,12 +2,12 @@ import React from 'react';
 
 interface MySelectProps {
   options: {
-    value: string,
+    value: string | number,
     name: string
   }[],
   defaultValue: string,
-  value: string,
-  onChange: (e: string) => void
+  value: string | number,
+  onChange: (e: string | number) => void
 }
 
 const MySelect = ({options, defaultValue, value, onChange}: MySelectProps) => {

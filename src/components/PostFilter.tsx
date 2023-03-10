@@ -28,7 +28,7 @@ const PostFilter = ({filter, setFilter}: PostFilterProps) => {
           { value: "title", name: "By title" },
           { value: "body", name: "By body" },
         ]}
-        onChange={selectedSort => setFilter({...filter, sort: selectedSort})}
+        onChange={selectedSort => setFilter({...filter, sort: String(selectedSort)})}
       />
     </div>
   );
