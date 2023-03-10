@@ -1,21 +1,38 @@
 import React from 'react';
 import {Navigate, Route, Routes} from "react-router-dom";
-import About from "../pages/About";
-import Posts from "../pages/Posts";
-import Error from "../pages/Error";
-import PostIdPage from "../pages/PostIdPage";
+import {publicRoutes, privateRoutes} from "../router";
 
 const AppRouter = () => {
+  const isAuth = false;
+
   return (
-    <Routes>
-      {/* react-router-dom v6: Routes. v5: Switch */}
-      <Route path="/about" element={ <About /> } />
-      <Route path="/posts" element={ <Posts /> } />
-      <Route path="/posts/:id" element={ <PostIdPage /> } />
-      <Route path="/error" element={ <Error /> } />
-      {/* react-router-dom v6: Route path=* v5: Redirect to */}
-      <Route path="*" element={<Navigate to="/posts" replace /> } />
-    </Routes>
+    isAuth
+      ?
+        <Routes>
+          {/*react-router-dom v6: Routes. v5: Switch */}
+          { privateRoutes.map( ({path, component: Component}) =>
+              <Route
+                key={path}
+                path={path}
+                element={<Component />}
+              />
+            )
+          }
+          {/* react-router-dom v6: Route path=* v5: Redirect to */}
+          <Route path="*" element={<Navigate to="/posts" replace /> } />
+        </Routes>
+      :
+        <Routes>
+          { publicRoutes.map( ({path, component: Component}) =>
+              <Route
+                key={path}
+                path={path}
+                element={<Component />}
+              />
+            )
+          }
+          <Route path="*" element={<Navigate to="/login" replace /> } />
+        </Routes>
   );
 };
 
