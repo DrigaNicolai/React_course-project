@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 /*import Counter from "./components/Counter";
 import ClassCounter from "./components/ClassCounter";*/
 import "../styles/App.css";
@@ -14,6 +14,7 @@ import Loader from "../components/UI/Loader/Loader";
 import {useFetching} from "../hooks/useFetching";
 import {getPageCount} from "../utils/pages";
 import Pagination from "../components/UI/pagination/Pagination";
+import {useObserver} from "../hooks/useObserver";
 
 const Posts = () => {
   const [posts, setPosts] = useState([
@@ -39,20 +40,25 @@ const Posts = () => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+  const lastElement = useRef(null)
 
   const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit: number, page: number) => {
     const response = await PostService.getAll(limit, page);
-    setPosts(response.data);
+    setPosts([...posts, ...response.data]);
 
     const totalCount = response.headers["x-total-count"];
     setTotalPages(getPageCount(totalCount, limit));
   })
 
+  useObserver(lastElement, page < totalPages, isPostsLoading, () => {
+    setPage(page + 1);
+  });
+
   useEffect(() => {
     console.log("useEffect hook");
     // @ts-ignore
     fetchPosts(limit, page);
-  }, []);
+  }, [page]);
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -65,7 +71,6 @@ const Posts = () => {
 
   const changePage = (page: number) => {
     setPage(page);
-    fetchPosts(limit, page)
   }
 
   return (
@@ -96,17 +101,20 @@ const Posts = () => {
           Error happened: ${postError}
         </h1>
       }
+      <PostList
+        posts={sortedAndSearchedPosts}
+        title={"List of posts 1"}
+        remove={removePost}
+      />
+      <div
+        ref={lastElement}
+        style={ { height: 20, background: "red" } }
+      />
       { isPostsLoading
-        ?
+        &&
         <div style={ { display: "flex", justifyContent: "center", marginTop: 50 } }>
           <Loader />
         </div>
-        :
-        <PostList
-          posts={sortedAndSearchedPosts}
-          title={"List of posts 1"}
-          remove={removePost}
-        />
       }
       <Pagination
         totalPages={totalPages}
